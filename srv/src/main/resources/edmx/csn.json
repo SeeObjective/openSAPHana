@@ -1,0 +1,418 @@
+{
+  "namespace": "opensap.PurchaseOrder",
+  "definitions": {
+    "Base": {
+      "kind": "entity",
+      "@cds.persistence.name": "BASE",
+      "elements": {
+        "ID": {
+          "@cds.persistence.name": "ID",
+          "key": true,
+          "type": "cds.Integer"
+        }
+      }
+    },
+    "CatalogService": {
+      "kind": "service",
+      "@source": "srv/cat-service.cds"
+    },
+    "CatalogService.Base": {
+      "kind": "entity",
+      "@cds.persistence.name": "CATALOGSERVICE_BASE",
+      "elements": {
+        "ID": {
+          "@cds.persistence.name": "ID",
+          "key": true,
+          "type": "cds.Integer"
+        }
+      }
+    },
+    "opensap.PurchaseOrder.AmountT": {
+      "kind": "type",
+      "@cds.persistence.name": "OPENSAP_PURCHASEORDER_AMOUNTT",
+      "type": "cds.Decimal",
+      "precision": 15,
+      "scale": 2
+    },
+    "opensap.PurchaseOrder.BusinessKey": {
+      "kind": "type",
+      "@cds.persistence.name": "OPENSAP_PURCHASEORDER_BUSINESSKEY",
+      "type": "cds.String",
+      "length": 10
+    },
+    "opensap.PurchaseOrder.CurrencyT": {
+      "kind": "type",
+      "@cds.persistence.name": "OPENSAP_PURCHASEORDER_CURRENCYT",
+      "type": "cds.String",
+      "length": 5
+    },
+    "opensap.PurchaseOrder.Headers": {
+      "kind": "entity",
+      "@cds.persistence.name": "OPENSAP_PURCHASEORDER_HEADERS",
+      "elements": {
+        "PURCHASEORDERID": {
+          "@cds.persistence.name": "PURCHASEORDERID",
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "ITEMS": {
+          "@cds.persistence.name": "ITEMS",
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "opensap.PurchaseOrder.Items",
+          "on": [
+            {
+              "ref": [
+                "ITEMS",
+                "POHeader"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "NOTEID": {
+          "@cds.persistence.name": "NOTEID",
+          "type": "cds.String",
+          "length": 10,
+          "notNull": false
+        },
+        "PARTNER": {
+          "@cds.persistence.name": "PARTNER",
+          "type": "cds.String",
+          "length": 10
+        },
+        "CURRENCY": {
+          "@cds.persistence.name": "CURRENCY",
+          "type": "cds.String",
+          "length": 5
+        },
+        "GROSSAMOUNT": {
+          "@cds.persistence.name": "GROSSAMOUNT",
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "NETAMOUNT": {
+          "@cds.persistence.name": "NETAMOUNT",
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "TAXAMOUNT": {
+          "@cds.persistence.name": "TAXAMOUNT",
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "LIFECYCLESTATUS": {
+          "@cds.persistence.name": "LIFECYCLESTATUS",
+          "type": "cds.String",
+          "length": 1
+        },
+        "APPROVALSTATUS": {
+          "@cds.persistence.name": "APPROVALSTATUS",
+          "type": "cds.String",
+          "length": 1
+        },
+        "CONFIRMSTATUS": {
+          "@cds.persistence.name": "CONFIRMSTATUS",
+          "type": "cds.String",
+          "length": 1
+        },
+        "ORDERINGSTATUS": {
+          "@cds.persistence.name": "ORDERINGSTATUS",
+          "type": "cds.String",
+          "length": 1
+        },
+        "INVOICINGSTATUS": {
+          "@cds.persistence.name": "INVOICINGSTATUS",
+          "type": "cds.String",
+          "length": 1
+        },
+        "HISTORY_CREATEDBY": {
+          "@cds.persistence.name": "HISTORY_CREATEDBY",
+          "type": "cds.String",
+          "length": 10,
+          "viaTransform": true
+        },
+        "HISTORY_CREATEDAT": {
+          "@cds.persistence.name": "HISTORY_CREATEDAT",
+          "type": "cds.DateTime",
+          "viaTransform": true
+        },
+        "HISTORY_CHANGEDBY": {
+          "@cds.persistence.name": "HISTORY_CHANGEDBY",
+          "type": "cds.String",
+          "length": 10,
+          "viaTransform": true
+        },
+        "HISTORY_CHANGEDAT": {
+          "@cds.persistence.name": "HISTORY_CHANGEDAT",
+          "type": "cds.DateTime",
+          "viaTransform": true
+        }
+      }
+    },
+    "opensap.PurchaseOrder.HistoryT": {
+      "kind": "type",
+      "@cds.persistence.name": "OPENSAP_PURCHASEORDER_HISTORYT",
+      "elements": {
+        "CREATEDBY": {
+          "@cds.persistence.name": "CREATEDBY",
+          "type": "cds.String",
+          "length": 10
+        },
+        "CREATEDAT": {
+          "@cds.persistence.name": "CREATEDAT",
+          "type": "cds.DateTime"
+        },
+        "CHANGEDBY": {
+          "@cds.persistence.name": "CHANGEDBY",
+          "type": "cds.String",
+          "length": 10
+        },
+        "CHANGEDAT": {
+          "@cds.persistence.name": "CHANGEDAT",
+          "type": "cds.DateTime"
+        }
+      }
+    },
+    "opensap.PurchaseOrder.ItemView": {
+      "kind": "entity",
+      "@cds.persistence.name": "OPENSAP_PURCHASEORDER_ITEMVIEW",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "opensap.PurchaseOrder.Items"
+            ]
+          },
+          "columns": [
+            {
+              "ref": [
+                "POHeader",
+                "PURCHASEORDERID"
+              ]
+            },
+            {
+              "ref": [
+                "POHeader",
+                "PARTNER"
+              ]
+            },
+            {
+              "ref": [
+                "PRODUCT"
+              ]
+            },
+            {
+              "ref": [
+                "CURRENCY"
+              ]
+            },
+            {
+              "ref": [
+                "GROSSAMOUNT"
+              ]
+            },
+            {
+              "ref": [
+                "NETAMOUNT"
+              ]
+            },
+            {
+              "ref": [
+                "TAXAMOUNT"
+              ]
+            },
+            {
+              "ref": [
+                "QUANTITY"
+              ]
+            },
+            {
+              "ref": [
+                "QUANTITYUNIT"
+              ]
+            },
+            {
+              "ref": [
+                "DELIVERYDATE"
+              ]
+            }
+          ]
+        }
+      },
+      "elements": {
+        "PURCHASEORDERID": {
+          "@cds.persistence.name": "PURCHASEORDERID",
+          "type": "cds.Integer"
+        },
+        "PARTNER": {
+          "@cds.persistence.name": "PARTNER",
+          "type": "cds.String",
+          "length": 10
+        },
+        "PRODUCT": {
+          "@cds.persistence.name": "PRODUCT",
+          "type": "cds.String",
+          "length": 10
+        },
+        "CURRENCY": {
+          "@cds.persistence.name": "CURRENCY",
+          "type": "cds.String",
+          "length": 5
+        },
+        "GROSSAMOUNT": {
+          "@cds.persistence.name": "GROSSAMOUNT",
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "NETAMOUNT": {
+          "@cds.persistence.name": "NETAMOUNT",
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "TAXAMOUNT": {
+          "@cds.persistence.name": "TAXAMOUNT",
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "QUANTITY": {
+          "@cds.persistence.name": "QUANTITY",
+          "type": "cds.Decimal",
+          "precision": 13,
+          "scale": 3
+        },
+        "QUANTITYUNIT": {
+          "@cds.persistence.name": "QUANTITYUNIT",
+          "type": "cds.String",
+          "length": 3
+        },
+        "DELIVERYDATE": {
+          "@cds.persistence.name": "DELIVERYDATE",
+          "type": "cds.DateTime"
+        }
+      },
+      "$syntax": "view"
+    },
+    "opensap.PurchaseOrder.Items": {
+      "kind": "entity",
+      "@cds.persistence.name": "OPENSAP_PURCHASEORDER_ITEMS",
+      "elements": {
+        "POHeader": {
+          "@cds.persistence.name": "POHEADER",
+          "key": true,
+          "type": "cds.Association",
+          "target": "opensap.PurchaseOrder.Headers",
+          "keys": [
+            {
+              "ref": [
+                "PURCHASEORDERID"
+              ],
+              "$generatedFieldName": "POHeader_PURCHASEORDERID"
+            }
+          ]
+        },
+        "PRODUCT": {
+          "@cds.persistence.name": "PRODUCT",
+          "key": true,
+          "type": "cds.String",
+          "length": 10
+        },
+        "NOTEID": {
+          "@cds.persistence.name": "NOTEID",
+          "type": "cds.String",
+          "length": 10,
+          "notNull": false
+        },
+        "CURRENCY": {
+          "@cds.persistence.name": "CURRENCY",
+          "type": "cds.String",
+          "length": 5
+        },
+        "GROSSAMOUNT": {
+          "@cds.persistence.name": "GROSSAMOUNT",
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "NETAMOUNT": {
+          "@cds.persistence.name": "NETAMOUNT",
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "TAXAMOUNT": {
+          "@cds.persistence.name": "TAXAMOUNT",
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "QUANTITY": {
+          "@cds.persistence.name": "QUANTITY",
+          "type": "cds.Decimal",
+          "precision": 13,
+          "scale": 3
+        },
+        "QUANTITYUNIT": {
+          "@cds.persistence.name": "QUANTITYUNIT",
+          "type": "cds.String",
+          "length": 3
+        },
+        "DELIVERYDATE": {
+          "@cds.persistence.name": "DELIVERYDATE",
+          "type": "cds.DateTime"
+        },
+        "POHeader_PURCHASEORDERID": {
+          "@cds.persistence.name": "POHEADER_PURCHASEORDERID",
+          "@odata.foreignKey4": "POHeader",
+          "key": true,
+          "type": "cds.Integer"
+        }
+      }
+    },
+    "opensap.PurchaseOrder.QuantityT": {
+      "kind": "type",
+      "@cds.persistence.name": "OPENSAP_PURCHASEORDER_QUANTITYT",
+      "type": "cds.Decimal",
+      "precision": 13,
+      "scale": 3
+    },
+    "opensap.PurchaseOrder.SDate": {
+      "kind": "type",
+      "@cds.persistence.name": "OPENSAP_PURCHASEORDER_SDATE",
+      "type": "cds.DateTime"
+    },
+    "opensap.PurchaseOrder.StatusT": {
+      "kind": "type",
+      "@cds.persistence.name": "OPENSAP_PURCHASEORDER_STATUST",
+      "type": "cds.String",
+      "length": 1
+    },
+    "opensap.PurchaseOrder.UnitT": {
+      "kind": "type",
+      "@cds.persistence.name": "OPENSAP_PURCHASEORDER_UNITT",
+      "type": "cds.String",
+      "length": 3
+    }
+  },
+  "version": {
+    "csn": "1.0"
+  },
+  "meta": {
+    "creator": "CDS Compiler v1.18.2"
+  },
+  "$version": "1.0",
+  "@sql_mapping": "plain"
+}
