@@ -34,6 +34,11 @@ modules:
       - name: openSAPHANA-db-hdi-container
         properties:
           TARGET_CONTAINER: '~{hdi-container-name}'
+      - name: cross-container-service-1
+        group: SERVICE_REPLACEMENTS
+        properties:
+          key: ServiceName_1
+          service: '~{the-service-name}'
   - name: srv
     type: nodejs
     path: srv
@@ -82,9 +87,8 @@ resources:
       service-plan: lite
       service: destination
     type: org.cloudfoundry.managed-service
-  - name: ''
+  - name: cross-container-service-1
     type: org.cloudfoundry.existing-service
-    description: cross-container-service-1
     parameters:
       service-name: CROSS_SCHEMA_SFLIGHT
     properties:
