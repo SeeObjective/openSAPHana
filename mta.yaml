@@ -58,6 +58,7 @@ resources:
       service-plan: app-runtime
       service: html5-apps-repo
     type: org.cloudfoundry.managed-service
+    properties: {}
   - name: openSAPHANA_html5_repo_host
     parameters:
       service-plan: app-host
@@ -81,3 +82,10 @@ resources:
       service-plan: lite
       service: destination
     type: org.cloudfoundry.managed-service
+  - name: ''
+    type: org.cloudfoundry.existing-service
+    description: cross-container-service-1
+    parameters:
+      service-name: CROSS_SCHEMA_SFLIGHT
+    properties:
+      the-service-name: '${service-name}'
