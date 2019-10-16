@@ -1,16 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.xml" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Include Alias="Capabilities" Namespace="Org.OData.Capabilities.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://wiki.scn.sap.com/wiki/download/attachments/448470974/Common.xml?api=v2" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+  </edmx:Reference>
   <edmx:DataServices m:DataServiceVersion="2.0">
     <Schema Namespace="CatalogService" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
       <EntityContainer Name="EntityContainer" m:IsDefaultEntityContainer="true">
-        <EntitySet Name="Base" EntityType="CatalogService.Base"/>
+        <EntitySet Name="POItems" EntityType="CatalogService.POItems"/>
+        <EntitySet Name="POs" EntityType="CatalogService.POs"/>
+        <AssociationSet Name="POItems_POHeader" Association="CatalogService.POItems_POHeader">
+          <End Role="POItems" EntitySet="POItems"/>
+          <End Role="POs" EntitySet="POs"/>
+        </AssociationSet>
       </EntityContainer>
-      <EntityType Name="Base">
+      <EntityType Name="POItems">
         <Key>
-          <PropertyRef Name="ID"/>
+          <PropertyRef Name="PRODUCT"/>
+          <PropertyRef Name="POHeader_PURCHASEORDERID"/>
         </Key>
-        <Property Name="ID" Type="Edm.Int32" Nullable="false"/>
+        <NavigationProperty Name="POHeader" Relationship="CatalogService.POItems_POHeader" FromRole="POItems" ToRole="POs"/>
+        <Property Name="PRODUCT" Type="Edm.String" MaxLength="10" Nullable="false"/>
+        <Property Name="NOTEID" Type="Edm.String" MaxLength="10"/>
+        <Property Name="CURRENCY" Type="Edm.String" MaxLength="5"/>
+        <Property Name="GROSSAMOUNT" Type="Edm.Decimal" Scale="2" Precision="15"/>
+        <Property Name="NETAMOUNT" Type="Edm.Decimal" Scale="2" Precision="15"/>
+        <Property Name="TAXAMOUNT" Type="Edm.Decimal" Scale="2" Precision="15"/>
+        <Property Name="QUANTITY" Type="Edm.Decimal" Scale="3" Precision="13"/>
+        <Property Name="QUANTITYUNIT" Type="Edm.String" MaxLength="3"/>
+        <Property Name="DELIVERYDATE" Type="Edm.DateTimeOffset"/>
+        <Property Name="POHeader_PURCHASEORDERID" Type="Edm.Int32" Nullable="false"/>
       </EntityType>
+      <EntityType Name="POs">
+        <Key>
+          <PropertyRef Name="PURCHASEORDERID"/>
+        </Key>
+        <Property Name="PURCHASEORDERID" Type="Edm.Int32" Nullable="false"/>
+        <NavigationProperty Name="ITEMS" Relationship="CatalogService.POItems_POHeader" FromRole="POs" ToRole="POItems"/>
+        <Property Name="NOTEID" Type="Edm.String" MaxLength="10"/>
+        <Property Name="PARTNER" Type="Edm.String" MaxLength="10"/>
+        <Property Name="CURRENCY" Type="Edm.String" MaxLength="5"/>
+        <Property Name="GROSSAMOUNT" Type="Edm.Decimal" Scale="2" Precision="15"/>
+        <Property Name="NETAMOUNT" Type="Edm.Decimal" Scale="2" Precision="15"/>
+        <Property Name="TAXAMOUNT" Type="Edm.Decimal" Scale="2" Precision="15"/>
+        <Property Name="LIFECYCLESTATUS" Type="Edm.String" MaxLength="1"/>
+        <Property Name="APPROVALSTATUS" Type="Edm.String" MaxLength="1"/>
+        <Property Name="CONFIRMSTATUS" Type="Edm.String" MaxLength="1"/>
+        <Property Name="ORDERINGSTATUS" Type="Edm.String" MaxLength="1"/>
+        <Property Name="INVOICINGSTATUS" Type="Edm.String" MaxLength="1"/>
+        <Property Name="HISTORY_CREATEDBY" Type="Edm.String" MaxLength="10"/>
+        <Property Name="HISTORY_CREATEDAT" Type="Edm.DateTimeOffset"/>
+        <Property Name="HISTORY_CHANGEDBY" Type="Edm.String" MaxLength="10"/>
+        <Property Name="HISTORY_CHANGEDAT" Type="Edm.DateTimeOffset"/>
+      </EntityType>
+      <Association Name="POItems_POHeader">
+        <End Role="POItems" Type="CatalogService.POItems" Multiplicity="*"/>
+        <End Role="POs" Type="CatalogService.POs" Multiplicity="0..1"/>
+        <ReferentialConstraint>
+          <Principal Role="POs">
+            <PropertyRef Name="PURCHASEORDERID"/>
+          </Principal>
+          <Dependent Role="POItems">
+            <PropertyRef Name="POHeader_PURCHASEORDERID"/>
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Annotations Target="CatalogService.POItems" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+        <Annotation Term="Common.Label" String="{i18n>poService}"/>
+      </Annotations>
+      <Annotations Target="CatalogService.EntityContainer/POItems" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.InsertRestrictions">
+          <Record Type="Capabilities.InsertRestrictionsType">
+            <PropertyValue Property="Insertable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.UpdateRestrictions">
+          <Record Type="Capabilities.UpdateRestrictionsType">
+            <PropertyValue Property="Updatable" Bool="true"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="CatalogService.POs" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+        <Annotation Term="Common.Label" String="{i18n>poService}"/>
+      </Annotations>
+      <Annotations Target="CatalogService.EntityContainer/POs" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.InsertRestrictions">
+          <Record Type="Capabilities.InsertRestrictionsType">
+            <PropertyValue Property="Insertable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.UpdateRestrictions">
+          <Record Type="Capabilities.UpdateRestrictionsType">
+            <PropertyValue Property="Updatable" Bool="true"/>
+          </Record>
+        </Annotation>
+      </Annotations>
     </Schema>
   </edmx:DataServices>
 </edmx:Edmx>

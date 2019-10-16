@@ -16,16 +16,223 @@
       "kind": "service",
       "@source": "srv/cat-service.cds"
     },
-    "CatalogService.Base": {
+    "CatalogService.POItems": {
       "kind": "entity",
-      "@cds.persistence.name": "CATALOGSERVICE_BASE",
+      "@Capabilities.DeleteRestrictions.Deletable": true,
+      "@Capabilities.InsertRestrictions.Insertable": true,
+      "@Capabilities.UpdateRestrictions.Updatable": true,
+      "@Common.Label": "{i18n>poService}",
+      "@cds.persistence.name": "CATALOGSERVICE_POITEMS",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "opensap.PurchaseOrder.Items"
+            ]
+          }
+        }
+      },
       "elements": {
-        "ID": {
-          "@cds.persistence.name": "ID",
+        "POHeader": {
+          "@cds.persistence.name": "POHEADER",
+          "key": true,
+          "type": "cds.Association",
+          "target": "CatalogService.POs",
+          "keys": [
+            {
+              "ref": [
+                "PURCHASEORDERID"
+              ],
+              "$generatedFieldName": "POHeader_PURCHASEORDERID"
+            }
+          ]
+        },
+        "PRODUCT": {
+          "@cds.persistence.name": "PRODUCT",
+          "key": true,
+          "type": "cds.String",
+          "length": 10
+        },
+        "NOTEID": {
+          "@cds.persistence.name": "NOTEID",
+          "type": "cds.String",
+          "length": 10,
+          "notNull": false
+        },
+        "CURRENCY": {
+          "@cds.persistence.name": "CURRENCY",
+          "type": "cds.String",
+          "length": 5
+        },
+        "GROSSAMOUNT": {
+          "@cds.persistence.name": "GROSSAMOUNT",
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "NETAMOUNT": {
+          "@cds.persistence.name": "NETAMOUNT",
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "TAXAMOUNT": {
+          "@cds.persistence.name": "TAXAMOUNT",
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "QUANTITY": {
+          "@cds.persistence.name": "QUANTITY",
+          "type": "cds.Decimal",
+          "precision": 13,
+          "scale": 3
+        },
+        "QUANTITYUNIT": {
+          "@cds.persistence.name": "QUANTITYUNIT",
+          "type": "cds.String",
+          "length": 3
+        },
+        "DELIVERYDATE": {
+          "@cds.persistence.name": "DELIVERYDATE",
+          "type": "cds.DateTime"
+        },
+        "POHeader_PURCHASEORDERID": {
+          "@cds.persistence.name": "POHEADER_PURCHASEORDERID",
+          "@odata.foreignKey4": "POHeader",
           "key": true,
           "type": "cds.Integer"
         }
-      }
+      },
+      "$syntax": "projection"
+    },
+    "CatalogService.POs": {
+      "kind": "entity",
+      "@Capabilities.DeleteRestrictions.Deletable": true,
+      "@Capabilities.InsertRestrictions.Insertable": true,
+      "@Capabilities.UpdateRestrictions.Updatable": true,
+      "@Common.Label": "{i18n>poService}",
+      "@cds.persistence.name": "CATALOGSERVICE_POS",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": [
+              "opensap.PurchaseOrder.Headers"
+            ]
+          }
+        }
+      },
+      "elements": {
+        "PURCHASEORDERID": {
+          "@cds.persistence.name": "PURCHASEORDERID",
+          "key": true,
+          "type": "cds.Integer"
+        },
+        "ITEMS": {
+          "@cds.persistence.name": "ITEMS",
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "CatalogService.POItems",
+          "on": [
+            {
+              "ref": [
+                "ITEMS",
+                "POHeader"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "NOTEID": {
+          "@cds.persistence.name": "NOTEID",
+          "type": "cds.String",
+          "length": 10,
+          "notNull": false
+        },
+        "PARTNER": {
+          "@cds.persistence.name": "PARTNER",
+          "type": "cds.String",
+          "length": 10
+        },
+        "CURRENCY": {
+          "@cds.persistence.name": "CURRENCY",
+          "type": "cds.String",
+          "length": 5
+        },
+        "GROSSAMOUNT": {
+          "@cds.persistence.name": "GROSSAMOUNT",
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "NETAMOUNT": {
+          "@cds.persistence.name": "NETAMOUNT",
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "TAXAMOUNT": {
+          "@cds.persistence.name": "TAXAMOUNT",
+          "type": "cds.Decimal",
+          "precision": 15,
+          "scale": 2
+        },
+        "LIFECYCLESTATUS": {
+          "@cds.persistence.name": "LIFECYCLESTATUS",
+          "type": "cds.String",
+          "length": 1
+        },
+        "APPROVALSTATUS": {
+          "@cds.persistence.name": "APPROVALSTATUS",
+          "type": "cds.String",
+          "length": 1
+        },
+        "CONFIRMSTATUS": {
+          "@cds.persistence.name": "CONFIRMSTATUS",
+          "type": "cds.String",
+          "length": 1
+        },
+        "ORDERINGSTATUS": {
+          "@cds.persistence.name": "ORDERINGSTATUS",
+          "type": "cds.String",
+          "length": 1
+        },
+        "INVOICINGSTATUS": {
+          "@cds.persistence.name": "INVOICINGSTATUS",
+          "type": "cds.String",
+          "length": 1
+        },
+        "HISTORY_CREATEDBY": {
+          "@cds.persistence.name": "HISTORY_CREATEDBY",
+          "type": "cds.String",
+          "length": 10,
+          "viaTransform": true
+        },
+        "HISTORY_CREATEDAT": {
+          "@cds.persistence.name": "HISTORY_CREATEDAT",
+          "type": "cds.DateTime",
+          "viaTransform": true
+        },
+        "HISTORY_CHANGEDBY": {
+          "@cds.persistence.name": "HISTORY_CHANGEDBY",
+          "type": "cds.String",
+          "length": 10,
+          "viaTransform": true
+        },
+        "HISTORY_CHANGEDAT": {
+          "@cds.persistence.name": "HISTORY_CHANGEDAT",
+          "type": "cds.DateTime",
+          "viaTransform": true
+        }
+      },
+      "$syntax": "projection"
     },
     "opensap.PurchaseOrder.AmountT": {
       "kind": "type",
